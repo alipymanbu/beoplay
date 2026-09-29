@@ -1,94 +1,20 @@
-# BeoPlay: Bang & Olufsen Speakers and TVs in Home Assistant
+# Beoplay
 
-This component enables integration of B&O Audio/Video equipment with Home Assistant: TVs, Speakers and units like the BeoLink Converter ML/NL. BeoPlay API is the 2nd generation B&O API, after [Masterlink Gateway](https://github.com/giachello/mlgw) and before [Mozart](https://github.com/bang-olufsen/mozart-open-api). It is supported by devices built from 2015 onwards, including several BeoVision TV, newer BeoLab speakers and the NL/ML Converter.
+本仓库是「Beoplay」的安卓版本获取入口，附使用资料索引。
 
-It allows you to:
-* Control speakers and TVs just like a remote control (turn on, off, volume, select source, playback, media)
-* Execute Home Assistant automations based on:
-  * Status changes (Source, what's playing, volume...)  
-  * BeoOne "Light/Control" and "Function" keypresses on select systems. YMMV, not all devices support this.
+## 安装文件资源（夸克网盘）
 
+> **Beoplay 安装文件资源（夸克网盘）**：[https://pan.quark.cn/s/b7f24a44eff0](https://pan.quark.cn/s/b7f24a44eff0)
 
-## Installation via HACS
-The preferred type of installation is via [HACS](https://hacs.xyz). This way, you'll get updates when there are new versions.
+## 官方项目
 
-### Manual Installation
+- 上游项目：[giachello/beoplay](https://github.com/giachello/beoplay)
 
-You can also install it manually in custom_components. Just copy the full contents of the `custom_components/beoplay` folder into the `config/custom_components/beoplay` folder in your Home Assistant system (You'll need to create the beoplay folder). If you are installing over a previous version, delete all the contents and start fresh. Then, restart Home Assistant.
+## 更多资料
 
-## Configuration
+- [Beoplay 下载与安装教程](https://github.com/alipymanbu/Android/blob/master/%E5%AE%98%E7%BD%91%E7%89%88APP%E4%B8%8B%E8%BD%BD/Beoplay/%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B.md)
+- [全部软件目录](https://github.com/alipymanbu/Android/blob/master/%E5%85%A8%E9%83%A8%E8%BD%AF%E4%BB%B6%E7%9B%AE%E5%BD%95.md)
 
-B&amp;O devices should automaticlly show up in your discovery panel (Configuration->Integrations). Just press "Configure".
+---
 
-If they don't show up, go to Configuration -> Integrations -> Add Integration (bottom right corner), search for BeoPlay and insert the host name or IP. It should work with both TVs, Speakers and other devices like NL/ML converters.
-
-Once configured, it should show up as something like this:
-
-![beoplay_mini_media_player.png](./beoplay_mini_media_player.png)
-
-### Configuring the Next/Prev button actions
-
-Older B&O devices use "Step Up" and "Step Down" to change CD tracks and radio channels. This includes the Beolink Converter NL/ML and BeoVision Avant TVs. Newer devices use "Forward" and "Backward" commands, including smart speakers and audio devices.
-
-You can select which one to use during the configuration flow. The default is Forward/Backward.
-
-### Power Saving modes caveats (WOL, Quickstart)
-
-If your TV or speaker is in power saving mode (Wake on Lan off, Quickstart off), the BeoPlay integration won't be able to connect with the device. The first time you set it up, the device needs to be powered on. Afterwards, if it cannot connect with the device it will retry, and reconnect once the device comes back online. 
-
-## Using the integration
-
-The `beoplay` integration creates a `media_player` and `remote` entities for each device. The `media_player` can be used as any other on Home Assistant, and responds to most common commands. 
-
-The `remote` can be used to send specific key-presses to the device, just as if you were to press the equivalent key on your Beo remote. The following keypresses are supported:
-
-`Cursor/Select, Cursor/Up, Cursor/Down, Cursor/Left, Cursor/Right, Cursor/Exit, Cursor/Back, Cursor/PageUp, Cursor/PageDown, Cursor/Clear, Stream/Play, Stream/Stop, Stream/Pause, Stream/Wind, Stream/Rewind, Stream/Forward, Stream/Backward, List/StepUp, List/StepDown, List/PreviousElement, List/Shuffle, List/Repeat, Menu/Root, Menu/Option, Menu/Setup, Menu/Contents, Menu/Favorites, Menu/ElectronicProgramGuide, Menu/VideoOnDemand, Menu/Text, Menu/HbbTV,Menu/HomeControl, Device/Information, Device/Eject, Device/TogglePower, Device/Languages, Device/Subtitles, Device/OneWayJoin, Device/Mots, Record/Record, Generic/Blue, Generic/Red, Generic/Green, Generic/Yellow` as well as the digits `0-9`
-
-See below for an example:
-
-![image](https://user-images.githubusercontent.com/60585229/232346866-6d185bb5-eedd-4ee2-9a88-79d38a0a2f41.png)
-
-
-## Actions
-
-The integration is a Media Player so responds to all Media Player actions.
-
-It also exposes 4 additional Actions:
-
-```
-beoplay.beoplay_join_experience:
-```
-This command joins the speaker to the current play experience, just like pressing the 'Join' button on the remote. A source must be playing already for Join to work. This Action works across B&O plugins (Mozart, Beoplay and MLGW), unlike the Home Assistant native Join service which only can connect experiences Mozart<>Mozart and Beoplay<>Beoplay.
-
-```
-beoplay.beoplay_leave_experience:
-```
-This command makes the speaker to disconnect from the current experience, and turn off.
-
-```
-beoplay.beoplay_add_media_to_queue:
-```
-This command is experimental. It allows to add a URL of a DLNA asset on your network to the speaker and play it. Let me know if it works for you!
-
-```
-beoplay.beoplay_set_stand_position:
-```
-This command is experimental. It allows to set the stand position of the TV. This would be the same name you have in your TV configuration, e.g. "StandBy" or "Start-Up".
-
-These are called through service calls, e.g.:
-
-![image](https://user-images.githubusercontent.com/60585229/211130163-81149354-1f41-4ae1-bbd3-1b91bfdcb812.png)
-
-
-## Events
-
-Beoplay also generates events (`beoplay_notification`) where you can track status changes of the speaker. You can use this to enable all kinds of cool experiences. For example, you can catch when the user activates a source like `A.MEM` to control automations on the Home Assistant. For example:
-* Start a streaming player that is connected with your B&O equipment.
-* Track when the TV turns on, to select a certain source, and adjust the lights in the room to create a better ambiance.
-* Track when the user presses a Light/Control or Function command on the BeoPlay remote (only works with certain devices, e.g., M3 speakers, but not with others, e.g. BeoVision Avant).
-
-<img width="739" alt="image" src="https://user-images.githubusercontent.com/60585229/145608754-8107acb5-fb85-447a-87bd-3f3804e5e3ed.png">
-
-## Troubleshoot
-* If you can't initialize a TV, try setting 'wake on LAN' or 'wake on WIFI' to on, depending on how your TV is connected to the network. 
-* Also, Home Assistant and the TV/Speaker must be on the same local network, i.e. they need to be able to communicate to one another.
+> 本仓库由上游项目 fork 而来，原始说明见[上游仓库](https://github.com/giachello/beoplay)。
